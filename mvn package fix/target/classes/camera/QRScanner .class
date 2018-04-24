@@ -1,0 +1,59 @@
+ ˛∫æ   1 ˆ  camera/QRScanner  java/lang/Object scanner Ljava/util/Scanner; <init> ()V Code
+     LineNumberTable LocalVariableTable this Lcamera/QRScanner; takeSnapAndScanForQRCodes
+    java/lang/Runtime   
+getRuntime ()Ljava/lang/Runtime;	    java/lang/System   out Ljava/io/PrintStream;  dEnter how many QR codes you want to Scan?(For example, enter 2, if you want to scan for 2 images..):
+   " ! java/io/PrintStream # $ println (Ljava/lang/String;)V & java/util/Scanner	  ( ) * in Ljava/io/InputStream;
+ % ,  - (Ljava/io/InputStream;)V	  /  
+ % 1 2 3 nextInt ()I 5 Z
+Keep the QR source before the Camera and once you are ready, press "ENTER" to continue...
+ % 7 8 9 nextLine ()Ljava/lang/String; ; java/lang/StringBuilder = Started taking the snap: 
+ : ?  $
+ : A B C append (I)Ljava/lang/StringBuilder;
+ : E F 9 toString H java/text/SimpleDateFormat J yyyyMMddHHmmss
+ G ? M java/util/Date
+ L 
+ G P Q R format $(Ljava/util/Date;)Ljava/lang/String; T snap_
+ : V B W -(Ljava/lang/String;)Ljava/lang/StringBuilder; Y .png [  raspistill --timeout 5 --output  ]  --nopreview
+  _ ` a exec '(Ljava/lang/String;)Ljava/lang/Process;
+ c e d java/lang/Process f 3 waitFor
+ h j i java/io/IOException k  printStackTrace
+ m j n java/lang/InterruptedException p java/io/File
+ o ?
+ o s t u exists ()Z w About to scan the snap file: y  for the QR code..
+ { } | javax/imageio/ImageIO ~  read .(Ljava/io/File;)Ljava/awt/image/BufferedImage;
+ Å É Ç java/awt/image/BufferedImage Ñ 3 getWidth
+ Å Ü á 3 	getHeight
+ Å â ä ã getRGB (IIII[III)[I ç #com/google/zxing/RGBLuminanceSource
+ å è  ê (II[I)V í com/google/zxing/BinaryBitmap î 'com/google/zxing/common/HybridBinarizer
+ ì ñ  ó %(Lcom/google/zxing/LuminanceSource;)V
+ ë ô  ö (Lcom/google/zxing/Binarizer;)V ú Error while reading the image:
+ : û B ü -(Ljava/lang/Object;)Ljava/lang/StringBuilder; ° _Bitmap is null as the Image is not in a recognizable format, hence the Decode is unsuccessful!! £ $com/google/zxing/qrcode/QRCodeReader
+ ¢ 
+ ¢ ¶ ß ® decode :(Lcom/google/zxing/BinaryBitmap;)Lcom/google/zxing/Result; ™ :Scan Decode is successful!!! The decoded QR Code text is:
+
+ ¨ Æ ≠ com/google/zxing/Result Ø 9 getText
+ ± ≥ ≤ java/lang/String ¥ µ valueOf &(Ljava/lang/Object;)Ljava/lang/String; ∑ 
+ π #========End of processing the snap  ª ======== Ω kImage is not in a recognizable format, hence the Decode is unsuccessful because of the following exception:
+ ø j ¿ "com/google/zxing/NotFoundException ¬ çThis NotFoundException is thrown when a QR Code was not found in the image. It might have been partially detected but could not be confirmed.
+ ƒ j ≈ "com/google/zxing/ChecksumException « êThis ChecksumException is thrown when a QR Code was successfully detected and decoded, but was not returned because its checksum feature failed.
+ … j    com/google/zxing/FormatException Ã √This FormatException is thrown when a QR Code was successfully detected, but some aspect of the content did not conform to the barcode's format rules. This could have been due to a mis-detection. rt Ljava/lang/Runtime; dateTime Ljava/lang/String; fileName bitmap Lcom/google/zxing/BinaryBitmap; count I i snap Ljava/lang/Process; e1 Ljava/io/IOException; e  Ljava/lang/InterruptedException; 	imageFile Ljava/io/File; image Ljava/awt/image/BufferedImage; pixels [I source %Lcom/google/zxing/RGBLuminanceSource; reader &Lcom/google/zxing/qrcode/QRCodeReader; result Lcom/google/zxing/Result; $Lcom/google/zxing/NotFoundException; $Lcom/google/zxing/ChecksumException; "Lcom/google/zxing/FormatException; main ([Ljava/lang/String;)V
+  
+     args [Ljava/lang/String; 	brScanner 
+SourceFile QRScanner.java !                	   /     *∑ 
+±                            	  Û    ∏ LMN:≤ ∂ *ª %Y≤ '∑ +µ .*¥ .∂ 066ßﬁ≤ 4∂ *ª %Y≤ '∑ +µ .*¥ .∂ 6W≤ ª :Y<∑ >∂ @∂ D∂ ª GYI∑ Kª LY∑ N∂ OMª :YS∑ >,∂ UX∂ U∂ DN+ª :YZ∑ >-∂ U\∂ U∂ D∂ ^:∂ bWß :∂ gß 
+:∂ lª oY-∑ q:∂ rô5≤ ª :Yv∑ >-∂ Ux∂ U∂ D∂ ∏ z:			∂ Ä	∂ Ö	∂ Ä∂ à:
+ª åY	∂ Ä	∂ Ö
+∑ é:ª ëYª ìY∑ ï∑ ò:ß !:	≤ ª :Yõ∑ >∂ ù∂ D∂ 	∂ g« ≤ †∂ ª ¢Y∑ §:		∂ •:
+≤ ©∂ ≤ ª :Y
+∂ ´∏ ∞∑ >∂∂ U∂ D∂ ≤ ª :Y∏∑ >∂ @∫∂ U∂ D∂ ß N:
+≤ º∂ 
+∂ æ≤ ¡∂ ß 4:
+≤ º∂ 
+∂ √≤ ∆∂ ß :
+≤ º∂ 
+∂ »≤ À∂ Ñ§˛!±  è ∞ ≥ h è ∞ Ω m Ò9< hp∫Ω øp∫◊ ƒp∫Ò …     Œ 3   #  $  %  &  '  ) ! * * + 0 , 8 . F / N 0 e 1 y 2 è 7 ™ 8 ∞ ; µ = Ω > ø @ ƒ C Œ D ÷ F Ò H ¯ I J' K9 M> NU OZ Q_ Rg Tp Vy WÅ Xû Y∫ Zø [« \Ã ]◊ ^Ÿ _· `Ê aÒ bÛ c˚ d  e + i              Õ Œ   œ –   — –   “ ”  *È ‘ ’  -Â ÷ ’  ™ 	 ◊ ÿ  µ  Ÿ ⁄  ø  € ‹  Œ: › ﬁ  ¯ A ﬂ ‡ 	 ' · ‚ 
+'  „ ‰ >  € ⁄ 	p ò Â Ê 	y A Á Ë 
+ø  € È 
+Ÿ  € Í 
+Û  € Î 
+ 	 Ï Ì  	   I     ª Y∑ ÓL+∂ Ô±           m  n  o         Ò Ú     Û    Ù    ı
